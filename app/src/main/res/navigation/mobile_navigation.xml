@@ -6,8 +6,44 @@
     app:startDestination="@id/ads_list">
 
     <fragment
+        android:id="@+id/ads_list"
+        android:name="com.group25.timebanking.fragments.ads.AdListFragment"
+        tools:layout="@layout/fragment_ad_list"
+        android:label="Ads list">
+        <action
+            android:id="@+id/action_ad_list_to_ad_details"
+            app:destination="@id/ad_details"
+            app:enterAnim="@anim/custom_from_right"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
+        <action
+            android:id="@+id/action_ad_list_to_user_profile"
+            app:destination="@id/showProfileFragment"
+            app:enterAnim="@anim/custom_from_top" />
+    </fragment>
+    <fragment
+        android:id="@+id/my_ads_list"
+        android:name="com.group25.timebanking.fragments.ads.MyAdsListFragment"
+        tools:layout="@layout/fragment_my_ads_list"
+        android:label="My Ads list">
+        <action
+            android:id="@+id/action_my_ads_list_to_ad_details"
+            app:destination="@id/ad_details"
+            app:enterAnim="@anim/custom_from_right"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
+        <action
+            android:id="@+id/action_my_ads_list_to_ad_edit"
+            app:destination="@id/ad_edit"
+            app:enterAnim="@anim/custom_from_top" />
+        <action
+            android:id="@+id/action_my_ads_list_to_user_profile"
+            app:destination="@id/showProfileFragment"
+            app:enterAnim="@anim/custom_from_top" />
+    </fragment>
+    <fragment
         android:id="@+id/ad_details"
-        android:name="com.group25.timebanking.ads.AdDetailsFragment"
+        android:name="com.group25.timebanking.fragments.ads.AdDetailsFragment"
         android:label="Ad Details"
         tools:layout="@layout/fragment_ad_detail" >
         <action
@@ -20,11 +56,12 @@
     </fragment>
     <fragment
         android:id="@+id/ad_edit"
-        android:name="com.group25.timebanking.ads.AdEditFragment"
+        android:name="com.group25.timebanking.fragments.ads.AdEditFragment"
+        tools:layout="@layout/fragment_ad_edit"
         android:label="Edit Ad" >
         <action
-            android:id="@+id/action_ad_edit_to_ads_list"
-            app:destination="@id/ads_list"
+            android:id="@+id/action_ad_edit_to_my_ads_list"
+            app:destination="@id/my_ads_list"
             app:enterAnim="@anim/custom_fade_in"
             app:exitAnim="@anim/custom_to_top"
             app:popEnterAnim="@anim/custom_fade_in"
@@ -33,23 +70,8 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/ads_list"
-        android:name="com.group25.timebanking.ads.AdListFragment"
-        android:label="Ads list">
-        <action
-            android:id="@+id/action_ad_list_to_ad_details"
-            app:destination="@id/ad_details"
-            app:enterAnim="@anim/custom_from_right"
-            app:popEnterAnim="@anim/custom_from_right"
-            app:popExitAnim="@anim/custom_to_right" />
-        <action
-            android:id="@+id/action_ad_list_to_ad_edit"
-            app:destination="@id/ad_edit"
-            app:enterAnim="@anim/custom_from_top" />
-    </fragment>
-    <fragment
         android:id="@+id/showProfileFragment"
-        android:name="com.group25.timebanking.profile.ShowProfileFragment"
+        android:name="com.group25.timebanking.fragments.profile.ShowProfileFragment"
         android:label="Show Profile"
         tools:layout="@layout/fragment_activity_show_profile">
         <action
@@ -63,7 +85,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileActivity"
-        android:name="com.group25.timebanking.profile.EditProfileFragment"
+        android:name="com.group25.timebanking.fragments.profile.EditProfileFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_activity_edit_profile">
         <action

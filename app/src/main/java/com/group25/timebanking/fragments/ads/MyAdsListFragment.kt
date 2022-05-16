@@ -1,32 +1,28 @@
-package com.group25.timebanking.ads
+package com.group25.timebanking.fragments.ads
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputLayout
 import com.group25.timebanking.R
 import com.group25.timebanking.adapters.AdAdapter
+import com.group25.timebanking.adapters.MyAdAdapter
 import com.group25.timebanking.utils.Database
 import java.util.*
-import kotlin.collections.ArrayList
-import com.group25.timebanking.models.Ads
 
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AdListFragment.newInstance] factory method to
+ * Use the [MyAdsListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 
 
-class AdListFragment : Fragment() {
+class MyAdsListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvAdsList: RecyclerView
@@ -36,7 +32,7 @@ class AdListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ad_list, container, false)
+        return inflater.inflate(R.layout.fragment_my_ads_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,7 +40,7 @@ class AdListFragment : Fragment() {
 
         val addFab = view.findViewById<FloatingActionButton>(R.id.addFab)
         addFab.setOnClickListener {
-            findNavController().navigate(R.id.action_ad_list_to_ad_edit, Bundle().apply {
+            findNavController().navigate(R.id.action_my_ads_list_to_ad_edit, Bundle().apply {
                 putBoolean("edit", false)
             })
         }
@@ -59,16 +55,17 @@ class AdListFragment : Fragment() {
     override fun onResume(){
         super.onResume()
 
-        val adsList: ArrayList<Ads> = Database.getInstance(context).adsList
+        Database.getInstance(context).getMyAdsList { adsList ->
 
-        if(adsList.count() == 0){
-            rvAdsList.visibility = View.GONE
-            tvEmpty.visibility = View.VISIBLE
-        } else {
-            rvAdsList.visibility = View.VISIBLE
-            tvEmpty.visibility = View.GONE
+            if (adsList.isEmpty()) {
+                rvAdsList.visibility = View.GONE
+                tvEmpty.visibility = View.VISIBLE
+            } else {
+                rvAdsList.visibility = View.VISIBLE
+                tvEmpty.visibility = View.GONE
+            }
+            rvAdsList.layoutManager = LinearLayoutManager(context)
+            rvAdsList.adapter = MyAdAdapter(adsList, parentFragmentManager)
         }
-        rvAdsList.layoutManager = LinearLayoutManager(context)
-        rvAdsList.adapter = AdAdapter(adsList, parentFragmentManager)
     }
 }

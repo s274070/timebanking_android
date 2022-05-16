@@ -1,4 +1,4 @@
-package com.group25.timebanking.ads
+package com.group25.timebanking.fragments.ads
 
 import android.os.Bundle
 import android.view.*
@@ -7,15 +7,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.group25.timebanking.utils.Database
 import com.group25.timebanking.R
-import com.group25.timebanking.extensions.toString
-import java.util.*
+import com.group25.timebanking.activities.MainActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-private var index: Int? = null
+private var adId: String = ""
 
 /**
  * A simple [Fragment] subclass.
@@ -26,6 +25,14 @@ class AdDetailsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private var isEditable: Boolean? = true
+
+    private lateinit var tvTitle: TextView
+    private lateinit var tvDescription: TextView
+    private lateinit var tvDateTime: TextView
+    private lateinit var tvDuration: TextView
+    private lateinit var tvLocation: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,27 +52,37 @@ class AdDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        index = arguments?.getInt("index")
 
-        val ad = Database.getInstance(context).adsList[index!!]
+        adId = arguments?.getString("id")!!
+        isEditable = arguments?.getBoolean("editable",true)
 
-        val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
-        val tvDescription = view.findViewById<TextView>(R.id.tvDescription)
-        val tvDateTime = view.findViewById<TextView>(R.id.tvDateTime)
-        val tvDuration = view.findViewById<TextView>(R.id.tvDuration)
-        val tvLocation = view.findViewById<TextView>(R.id.tvLocation)
 
-        tvTitle.text = ad.title
-        tvDescription.text = ad.description
-        tvDateTime.text = ad.date.toString("dd/MM/yyyy")+" "+ad.time.toString()
-        tvDuration.text = ad.duration.toString() + " hours"
-        tvLocation.text = ad.location
+        tvTitle = view.findViewById<TextView>(R.id.tvTitle)
+        tvDescription = view.findViewById<TextView>(R.id.tvDescription)
+        tvDateTime = view.findViewById<TextView>(R.id.tvDateTime)
+        tvDuration = view.findViewById<TextView>(R.id.tvDuration)
+        tvLocation = view.findViewById<TextView>(R.id.tvLocation)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Database.getInstance(context).getAdById(adId) { ad ->
+            if (ad != null) {
+                tvTitle.text = ad.title
+                tvDescription.text = ad.description
+                tvDateTime.text = ad.date + " " + ad.time
+                tvDuration.text = ad.duration.toString() + " hours"
+                tvLocation.text = ad.location
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        inflater.inflate(R.menu.fragment_ad_details, menu)
+        if (isEditable == true)
+            inflater.inflate(R.menu.fragment_ad_details, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -73,7 +90,7 @@ class AdDetailsFragment : Fragment() {
             R.id.edit -> {
                 findNavController().navigate(R.id.action_ad_details_to_ad_edit, Bundle().apply {
                     putBoolean("edit", true)
-                    putInt("index", index!!)
+                    putString("id", adId)
                 })
                 return true
             }

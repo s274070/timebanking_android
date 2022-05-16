@@ -1,4 +1,4 @@
-package com.group25.timebanking.profile
+package com.group25.timebanking.fragments.profile
 
 import android.app.Activity
 import android.content.Context
@@ -15,7 +15,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.group25.timebanking.R
+import com.group25.timebanking.activities.MainActivity
+import com.group25.timebanking.extensions.toString
+import com.group25.timebanking.models.Ads
+import com.group25.timebanking.models.Users
+import com.group25.timebanking.utils.Database
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -29,6 +36,12 @@ class ShowProfileFragment : Fragment() {
     private lateinit var tvSkills: TextView
     private lateinit var tvDescription: TextView
     private lateinit var imgProfile: ImageView
+
+    private lateinit var snackBar: Snackbar
+
+    private var isEditable: Boolean? = true
+    private var userId: String = ""
+    private var userEmail: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,8 +99,6 @@ class ShowProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
         tvEmail = view.findViewById(R.id.tvEmail)
@@ -95,33 +106,42 @@ class ShowProfileFragment : Fragment() {
         tvSkills = view.findViewById(R.id.tvSkills)
         tvDescription = view.findViewById(R.id.tvDescription)
         imgProfile = view.findViewById(R.id.imgProfile)
+    }
 
-        val sharedPref = requireActivity().getSharedPreferences(
-            getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE
-        )
-//        val sharedPref = getSharedPreferences(
-//            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-//        )
-        val data = sharedPref.getString("profile", null)
-        if (data != null)
-            with(JSONObject(data)) {
-                tvFullName.text = getString("fullName")
-                tvNickName.text = getString("nickName")
-                tvEmail.text = getString("email")
-                tvLocation.text = getString("location")
-                tvSkills.text = getString("skills")
-                tvDescription.text = getString("description")
+    override fun onResume() {
+        super.onResume()
+        //FirebaseAuth.getInstance().currentUser!!.email
+        userEmail = if(arguments?.containsKey("userId") == true)
+            arguments?.getString("userId", "")!!
+        else{
+            FirebaseAuth.getInstance().currentUser!!.email!!
+        }
+        isEditable = arguments?.getBoolean("editable", true)
+
+        Database.getInstance(context).getUserByEmail(userEmail) { user ->
+            if (user != null) {
+                userId = user.id
+                tvFullName.text = user.fullName
+                tvNickName.text = user.nickName
+                tvEmail.text = user.email
+                tvLocation.text = user.location
+                tvSkills.text = user.skills
+                tvDescription.text = user.description
             }
-        File(context?.filesDir, "profilepic.jpg").let {
-            if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
+
+        if (isEditable == true) {
+            File(context?.filesDir, "profilepic.jpg").let {
+                if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            }
         }
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.activity_show_profile_menu, menu)
+        if (isEditable == true)
+            inflater.inflate(R.menu.activity_show_profile_menu, menu)
 
     }
 
@@ -154,25 +174,31 @@ class ShowProfileFragment : Fragment() {
                     out.close()
                 }
             }
-            //serialize data into a JSON object
-            val profileData = JSONObject().also {
-                it.put("fullName", tvFullName.text)
-                it.put("nickName", tvNickName.text)
-                it.put("email", tvEmail.text)
-                it.put("location", tvLocation.text)
-                it.put("skills", tvSkills.text)
-                it.put("description", tvDescription.text)
-            }
 
-            //store data persistently
-            val sharedPref = requireActivity().getSharedPreferences(
-                getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE
+
+            val user = Users(
+                userId,
+                tvEmail.text.toString(),
+                tvFullName.text.toString(),
+                tvNickName.text.toString(),
+                tvSkills.text.toString(),
+                tvDescription.text.toString(),
+                tvLocation.text.toString()
             )
 
-            with(sharedPref.edit()) {
-                putString("profile", profileData.toString())
-                apply()
+            snackBar = Snackbar.make(
+                requireView().getRootView().findViewById(R.id.coordinatorLayout),
+                "Profile updated correctly",
+                Snackbar.LENGTH_LONG
+            )
+            snackBar.setAction("Dismiss") {
+                snackBar.dismiss()
+            }
+
+            if (isEditable == true) {
+                Database.getInstance(context).saveUser(user) {
+                    snackBar.show()
+                }
             }
 
 

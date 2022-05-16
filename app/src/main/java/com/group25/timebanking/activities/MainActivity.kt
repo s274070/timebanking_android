@@ -1,25 +1,29 @@
-package com.group25.timebanking
+package com.group25.timebanking.activities
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.group25.timebanking.R
 import com.group25.timebanking.utils.Database
+import com.group25.timebanking.utils.SharedPrefs
 import org.json.JSONObject
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        lateinit var mAuth: FirebaseAuth
+    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -34,22 +38,13 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        Database.getInstance(this).load()
+        mAuth = FirebaseAuth.getInstance()
 
-//        val fab: FloatingActionButton = findViewById(R.id.fab)
-//        fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
-//        }
-
-
-        val coordinatorLayout = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
 
-        loadData()
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -62,12 +57,6 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }*/
-
     fun loadData() {
         val drawer = navView.getHeaderView(0)
 
@@ -75,22 +64,23 @@ class MainActivity : AppCompatActivity() {
         ivHeaderProfileImage = drawer.findViewById<ImageView>(R.id.headerProfileImage)
         tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
 
-        val sharedPref = getSharedPreferences(
-            getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE
-        )
 
-        val data = sharedPref.getString("profile", null)
-
-        if (data != null)
-            with(JSONObject(data)) {
-                tvHeaderName.text = getString("fullName")
-                tvHeaderEmail.text = getString("email")
+        Database.getInstance(this).getUserByEmail(mAuth.currentUser!!.email!!) { user ->
+            if (user != null) {
+                tvHeaderName.text = user.fullName
+                tvHeaderEmail.text = user.email
             }
+        }
 
         File(filesDir, "profilepic.jpg").let {
             if (it.exists()) ivHeaderProfileImage.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        loadData()
     }
 
     override fun onSupportNavigateUp(): Boolean {

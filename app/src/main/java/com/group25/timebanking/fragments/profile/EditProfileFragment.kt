@@ -1,4 +1,4 @@
-package com.group25.timebanking.profile
+package com.group25.timebanking.fragments.profile
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -138,11 +138,7 @@ class EditProfileFragment : Fragment() {
                         "group25.timebanking.profile" to "profilepic.jpg"
                     )
                 )
-                snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Profile updated correctly", Snackbar.LENGTH_LONG)
-                snackBar.setAction("Dismiss"){
-                    snackBar.dismiss()
-                }
-                snackBar.show()
+
                 findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 true
             }

@@ -9,8 +9,12 @@
             android:icon="@drawable/ic_baseline_list_24"
             android:title="Ads" />
         <item
-            android:id="@+id/showProfileFragment"
+            android:id="@+id/my_ads_list"
             android:icon="@drawable/ic_baseline_list_24"
+            android:title="My Ads" />
+        <item
+            android:id="@+id/showProfileFragment"
+            android:icon="@drawable/ic_person_white"
             android:title="Profile" />
     </group>
 </menu>

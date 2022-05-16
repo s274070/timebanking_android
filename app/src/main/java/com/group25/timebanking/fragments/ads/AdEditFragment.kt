@@ -1,9 +1,7 @@
-package com.group25.timebanking.ads
+package com.group25.timebanking.fragments.ads
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
-import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -11,12 +9,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.firebase.auth.FirebaseAuth
+import com.group25.timebanking.activities.MainActivity
 import com.group25.timebanking.utils.Database
 import com.group25.timebanking.R
-import java.lang.StringBuilder
 import java.util.*
 import com.group25.timebanking.extensions.toString
 import com.group25.timebanking.models.Ads
+import java.text.SimpleDateFormat
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,11 +45,11 @@ class AdEditFragment : Fragment() {
     private lateinit var snackBar: Snackbar;
 
     private var dateValue: Date = Date()
-    private var timeValue: String = "12:10"
+    private var timeValue: String = "10:00"
     private var dateOk: Boolean = false
 
-    private var edit: Boolean? = false
-    private var index = -1
+    private var isEditMode: Boolean? = false
+    private var adId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,20 +94,24 @@ class AdEditFragment : Fragment() {
     override fun onResume(){
         super.onResume()
 
-        edit = arguments?.getBoolean("edit")
-        if (edit!!){
-            index = arguments?.getInt("index")!!
+        isEditMode = arguments?.getBoolean("edit")
+        if (isEditMode!!) {
+            adId = arguments?.getString("id")!!
 
-            val ad = Database.getInstance(context).adsList[index]
-            etTitle.editText?.setText(ad.title)
-            etLocation.editText?.setText(ad.location)
-            etDateTime.editText?.setText(ad.date.toString("dd/MM/yyyy")+" - "+ad.time)
-            etDuration.editText?.setText(ad.duration.toString())
-            etDescription.editText?.setText(ad.description)
+            Database.getInstance(context).getAdById(adId) { ad ->
+                if (ad != null) {
 
-            dateValue = ad.date
-            timeValue = ad.time
-            dateOk = true
+                    etTitle.editText?.setText(ad.title)
+                    etLocation.editText?.setText(ad.location)
+                    etDateTime.editText?.setText(ad.date + " - " + ad.time)
+                    etDuration.editText?.setText(ad.duration.toString())
+                    etDescription.editText?.setText(ad.description)
+
+                    dateValue = SimpleDateFormat("dd/MM/yyyy").parse(ad.date)
+                    timeValue = ad.time
+                    dateOk = true
+                }
+            }
         }
 
         val datePicker =
@@ -162,36 +166,45 @@ class AdEditFragment : Fragment() {
         when(item.itemId){
             R.id.save -> {
                 //save data
-                if (validateForm()){
+                if (validateForm()) {
 
                     val ad = Ads(
+                        adId,
                         etTitle.editText?.text.toString(),
                         etDescription.editText?.text.toString(),
-                        dateValue,
+                        dateValue.toString("dd/MM/yyyy"),
                         timeValue,
                         etDuration.editText?.text.toString().toInt(),
-                                etLocation.editText?.text.toString())
+                        etLocation.editText?.text.toString(),
+                        FirebaseAuth.getInstance().currentUser!!.email!!
+                    )
 
-                    if (edit!!)
-                        Database.getInstance(context).adsList[index] = ad
-                    else
-                        Database.getInstance(context).adsList.add(ad)
-
-                    //save
-                    Database.getInstance(context).save()
-                    snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Ad updated correctly", Snackbar.LENGTH_LONG)
-                    snackBar.setAction("Dismiss"){
+                    snackBar = Snackbar.make(
+                        requireView().getRootView().findViewById(R.id.coordinatorLayout),
+                        "Ad updated correctly",
+                        Snackbar.LENGTH_LONG
+                    )
+                    snackBar.setAction("Dismiss") {
                         snackBar.dismiss()
                     }
-                    snackBar.show()
 
-                    findNavController().navigate(R.id.action_ad_edit_to_ads_list)
+                    if (isEditMode!!) {
+                        Database.getInstance(context).saveAd(ad) {
+                            snackBar.show()
+                            findNavController().navigate(R.id.action_ad_edit_to_my_ads_list)
+                        }
+                    }
+                    /*else {
+                        Database.getInstance(context).adsList.add(ad)
+                        Database.getInstance(context).save()
+                    }*/
+
                 }
                 return true
             }
             android.R.id.home -> {
                 //Handling the toolbar back button
-                findNavController().navigate(R.id.action_ad_edit_to_ads_list)
+                findNavController().navigate(R.id.action_ad_edit_to_my_ads_list)
                 return true
             }
         }

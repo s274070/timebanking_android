@@ -100,11 +100,11 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/btnUser"
+                        android:id="@+id/btnEdit"
                         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                        android:layout_width="120dp"
+                        android:layout_width="70dp"
                         android:layout_height="40dp"
-                        android:text="User info"
+                        android:text="Edit"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.99"

@@ -11,4 +11,8 @@
     <color name="textColorMain">#000000</color>
     <color name="textColorAccent">#606060</color>
     <color name="etBackgroundTint">#92AEAEAE</color>
+
+    <color name="bg_main_screen_background">#000000</color>
+    <!--<color name="bg_login_screen_background">#037e7c</color>-->
+    <color name="bg_login_screen_background">#c1c1c1</color>
 </resources>

@@ -1,10 +1,13 @@
 package com.group25.timebanking.adapters
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
@@ -13,11 +16,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.group25.timebanking.R
 import com.group25.timebanking.extensions.toString
 import com.group25.timebanking.models.Ads
+import java.util.*
 
-class AdAdapter(private val data: List<Ads>, fragmentManager: FragmentManager?) :
-    RecyclerView.Adapter<AdAdapter.ViewHolder>() {
+class AdAdapter() :
+    RecyclerView.Adapter<AdAdapter.ViewHolder>(), Filterable{
 
-    var fm: FragmentManager? = fragmentManager
+    var fm: FragmentManager? = null
+    var data: MutableList<Ads> = ArrayList()
+    var dataFull: MutableList<Ads> = ArrayList()
+    var caller: String = ""
+
+    constructor(
+        allData: MutableList<Ads>,
+        caller: String,
+        fragmentManager: FragmentManager?
+    ) : this() {
+        this.data = allData
+        this.dataFull.addAll(data)
+        this.fm = fragmentManager
+        this.caller = caller
+    }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val tvTitle: TextView = v.findViewById<TextView>(R.id.tvTitle)
@@ -25,10 +43,10 @@ class AdAdapter(private val data: List<Ads>, fragmentManager: FragmentManager?) 
         val tvDuration: TextView = v.findViewById<TextView>(R.id.tvDuration)
         val tvLocation: TextView = v.findViewById<TextView>(R.id.tvLocation)
         val cardAd = v.findViewById<CardView>(R.id.cardAd)
-        val btnEdit = v.findViewById<Button>(R.id.btnEdit)
+        val btnUser = v.findViewById<Button>(R.id.btnUser)
 
         fun bind(ad: Ads) {
-            tvDateTime.text = ad.date.toString("dd/MM/yyyy")+"  "+ad.time.toString()
+            tvDateTime.text = ad.date+"  "+ad.time.toString()
             tvTitle.text = ad.title
             tvLocation.text = ad.location
             tvDuration.text = ad.duration.toString() + " hours"
@@ -49,19 +67,53 @@ class AdAdapter(private val data: List<Ads>, fragmentManager: FragmentManager?) 
         holder.bind(data[position])
         holder.cardAd.setOnClickListener {
             holder.cardAd.findNavController().navigate(R.id.action_ad_list_to_ad_details, Bundle().apply {
-                putInt("index", position)
+                putString("id", data[position].id)
+                putBoolean("editable", false)
             })
         }
 
-        holder.btnEdit.setOnClickListener {
-            holder.cardAd.findNavController().navigate(R.id.action_ad_list_to_ad_edit, Bundle().apply {
-                putInt("index", position)
-                putBoolean("edit", true)
+        holder.btnUser.setOnClickListener {
+            holder.cardAd.findNavController().navigate(R.id.action_ad_list_to_user_profile, Bundle().apply {
+                putString("userId", data[position].createdUser)
+                putBoolean("editable", false)
             })
         }
     }
 
     override fun getItemCount(): Int {
         return data.size
+    }
+
+    override fun getFilter(): Filter {
+        return myFilter;
+    }
+
+    private var myFilter: Filter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val dataFiltered = mutableListOf<Ads>()
+            if (constraint == null || constraint.isEmpty()) {
+                dataFiltered.addAll(dataFull)
+            } else {
+                val filterPattern = constraint.toString().toLowerCase().trim()
+                for (item: Ads in dataFull) {
+                    if (item.title.lowercase(Locale.ROOT).contains(filterPattern) ||
+                        item.location.lowercase(Locale.ROOT).contains(filterPattern) ||
+                        item.date.contains(filterPattern)
+                    ) {
+                        dataFiltered.add(item)
+                    }
+                }
+            }
+
+            val results = FilterResults()
+            results.values = dataFiltered
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            data.clear()
+            data.addAll(results?.values as MutableList<Ads>)
+            notifyDataSetChanged()
+        }
     }
 }
