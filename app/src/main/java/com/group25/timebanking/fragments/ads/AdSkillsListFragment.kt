@@ -3,6 +3,7 @@ package com.group25.timebanking.fragments.ads
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -12,25 +13,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.group25.timebanking.R
 import com.group25.timebanking.adapters.AdAdapter
+import com.group25.timebanking.adapters.AdSkillsAdapter
 import com.group25.timebanking.utils.Database
 import java.util.*
 
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AdListFragment.newInstance] factory method to
+ * Use the [AdSkillsListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 
 
-class AdListFragment : Fragment() {
+class AdSkillsListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
-    private lateinit var rvAdsList: RecyclerView
+    private lateinit var rvAdSkillsList: RecyclerView
 
-    private var argSkill: String = ""
-
-    var adapter: AdAdapter? = null
+    var adapter: AdSkillsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,35 +38,31 @@ class AdListFragment : Fragment() {
     ): View? {
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ad_list, container, false)
+        return inflater.inflate(R.layout.fragment_ad_skills_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         tvEmpty = view.findViewById<TextView>(R.id.tvEmpty)
-        rvAdsList = view.findViewById<RecyclerView>(R.id.rvAdsList)
-
-        argSkill = arguments?.getString("skill")!!
-
-        //TODO: set actionbar title
+        rvAdSkillsList = view.findViewById<RecyclerView>(R.id.rvAdSkillsList)
 
     }
 
     override fun onResume(){
         super.onResume()
 
-        Database.getInstance(context).getAdsList(argSkill) { adsList ->
+        Database.getInstance(context).getAdsSkillsList { dataList ->
 
-            if (adsList.isEmpty()) {
-                rvAdsList.visibility = View.GONE
+            if (dataList.isEmpty()) {
+                rvAdSkillsList.visibility = View.GONE
                 tvEmpty.visibility = View.VISIBLE
             } else {
-                rvAdsList.visibility = View.VISIBLE
+                rvAdSkillsList.visibility = View.VISIBLE
                 tvEmpty.visibility = View.GONE
             }
-            rvAdsList.layoutManager = LinearLayoutManager(context)
-            adapter = AdAdapter(adsList, "AdListFragment", parentFragmentManager)
-            rvAdsList.adapter = adapter
+            rvAdSkillsList.layoutManager = LinearLayoutManager(context)
+            adapter = AdSkillsAdapter(dataList.toMutableList(), "AdSkillsListFragment", parentFragmentManager)
+            rvAdSkillsList.adapter = adapter
         }
     }
 
@@ -78,7 +74,7 @@ class AdListFragment : Fragment() {
         val searchView: SearchView = searchItem.actionView as SearchView
 
         searchView.imeOptions = EditorInfo.IME_ACTION_DONE
-        searchView.queryHint = "Title, Location, Date";
+        searchView.queryHint = "Title";
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {

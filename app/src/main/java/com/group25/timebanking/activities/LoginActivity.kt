@@ -41,24 +41,16 @@ class LoginActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         // if user is not authenticated, send them to the LogInActivity
-        val user = mAuth.currentUser
-        if (user != null) {
+        if (mAuth.currentUser != null) {
             val mainIntent = Intent(this, MainActivity::class.java)
             startActivity(mainIntent)
             finish()
         }
 
         btnSignIn.setOnClickListener {
-            signIn()
+            startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
         }
-
     }
-
-    private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -79,7 +71,6 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 Log.w("LogInActivity", exception.toString())
             }
-
         }
     }
 
@@ -90,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("LogInActivity", "signInWithCredential:success")
-//                    val user = mAuth.currentUser
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -98,6 +88,9 @@ class LoginActivity : AppCompatActivity() {
                     // If sign in fails, display a message to the user.
                     Log.w("LogInActivity", "signInWithCredential:failure", task.exception)
                     Toast.makeText(applicationContext,"Login failed",Toast.LENGTH_SHORT).show()
+
+                    googleSignInClient.signOut()
+                    mAuth.signOut()
                 }
             }
     }

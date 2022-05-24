@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "321629488021",
+    "project_id": "razi-polito-homebanking",
+    "storage_bucket": "razi-polito-homebanking.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321629488021:android:2bd5d004d1b6c9ca076c9c",
+        "android_client_info": {
+          "package_name": "com.group25.timebanking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "321629488021-odrjq49t55faoheef4kvgkibqbcrdhih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group25.timebanking",
+            "certificate_hash": "73780a64ab3d9dbff9081fa6913ddb31fe3d96d1"
+          }
+        },
+        {
+          "client_id": "321629488021-2vt5v0ml00r7cbc7mts7c7rmmujni4p6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6ScUUnmMXsQr3QcWxrGGUeuut_-8nHJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "321629488021-2vt5v0ml00r7cbc7mts7c7rmmujni4p6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

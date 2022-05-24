@@ -14,7 +14,6 @@ import com.group25.timebanking.activities.MainActivity
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-private var adId: String = ""
 
 /**
  * A simple [Fragment] subclass.
@@ -33,6 +32,8 @@ class AdDetailsFragment : Fragment() {
     private lateinit var tvDateTime: TextView
     private lateinit var tvDuration: TextView
     private lateinit var tvLocation: TextView
+
+    private var adId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

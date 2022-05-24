@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
@@ -15,9 +16,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.group25.timebanking.R
+import com.group25.timebanking.activities.LoginActivity
 import com.group25.timebanking.activities.MainActivity
 import com.group25.timebanking.extensions.toString
 import com.group25.timebanking.models.Ads
@@ -36,6 +40,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var tvSkills: TextView
     private lateinit var tvDescription: TextView
     private lateinit var imgProfile: ImageView
+    private lateinit var btnLogout: Button
 
     private lateinit var snackBar: Snackbar
 
@@ -91,7 +96,6 @@ class ShowProfileFragment : Fragment() {
             }
         }
 
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_activity_show_profile, container, false)
     }
@@ -106,16 +110,37 @@ class ShowProfileFragment : Fragment() {
         tvSkills = view.findViewById(R.id.tvSkills)
         tvDescription = view.findViewById(R.id.tvDescription)
         imgProfile = view.findViewById(R.id.imgProfile)
+        btnLogout = view.findViewById(R.id.btnLogout)
+
+        btnLogout.setOnClickListener {
+
+            FirebaseAuth.getInstance().signOut()
+
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.google_web_client_id))
+                .requestEmail()
+                .build()
+
+            val googleSignInClient = GoogleSignIn.getClient( requireContext() , gso)
+
+            googleSignInClient.signOut()
+
+            val intent = Intent(context, LoginActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        //FirebaseAuth.getInstance().currentUser!!.email
-        userEmail = if(arguments?.containsKey("userId") == true)
-            arguments?.getString("userId", "")!!
-        else{
-            FirebaseAuth.getInstance().currentUser!!.email!!
+
+        if (arguments?.containsKey("userId") == true) {
+            userEmail = arguments?.getString("userId", "")!!
+            btnLogout.visibility = View.GONE
+        } else {
+            userEmail = FirebaseAuth.getInstance().currentUser!!.email!!
         }
+
         isEditable = arguments?.getBoolean("editable", true)
 
         Database.getInstance(context).getUserByEmail(userEmail) { user ->

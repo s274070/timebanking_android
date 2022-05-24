@@ -50,8 +50,8 @@ class Database private constructor (context: Context?) {
     }
      */
 
-    fun getAdsList(onFinishCallback: (ArrayList<Ads>) -> Unit = {}) {
-        var adsList: ArrayList<Ads> = ArrayList()
+    fun getAdsSkillsList(onFinishCallback: (List<String>) -> Unit = {}) {
+        var adsSkillsList: ArrayList<String> = ArrayList()
         var mAuth = FirebaseAuth.getInstance()
         FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
             .addSnapshotListener { value, error ->
@@ -59,6 +59,22 @@ class Database private constructor (context: Context?) {
                 for (doc in value!!) {
                     val ad = Ads(doc)
                     if (ad.createdUser != mAuth.currentUser!!.email!!) {
+                        adsSkillsList.add(ad.title.uppercase())
+                    }
+                }
+                onFinishCallback(adsSkillsList.distinct())
+            }
+    }
+
+    fun getAdsList(skill:String, onFinishCallback: (ArrayList<Ads>) -> Unit = {}) {
+        var adsList: ArrayList<Ads> = ArrayList()
+        var mAuth = FirebaseAuth.getInstance()
+        FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
+            .addSnapshotListener { value, error ->
+                if (error != null) throw error
+                for (doc in value!!) {
+                    val ad = Ads(doc)
+                    if (ad.title.equals(skill, ignoreCase = true) && ad.createdUser != mAuth.currentUser!!.email!!) {
                         adsList.add(ad)
                     }
                 }
