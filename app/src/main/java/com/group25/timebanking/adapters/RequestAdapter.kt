@@ -8,18 +8,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.group25.timebanking.R
+import com.group25.timebanking.activities.MainActivity
+import com.group25.timebanking.fragments.ads.RequestListFragment
 import com.group25.timebanking.models.Request
+import com.group25.timebanking.utils.Database
 
 
-class RequestAdapter(private val data: List<Request>, context: Context) :
+class RequestAdapter(
+    private val data: List<Request>,
+    context: Context,
+    requestListFragment: RequestListFragment
+) :
     RecyclerView.Adapter<RequestAdapter.ViewHolder>() {
 
     val context: Context = context
+    val requestListFragment: RequestListFragment = requestListFragment
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val tvTitle: TextView = v.findViewById<TextView>(R.id.tvTitle)
@@ -38,8 +47,10 @@ class RequestAdapter(private val data: List<Request>, context: Context) :
             tvLocation.text = req.AdLocation
             tvDuration.text = req.AdDuration.toString() + " hours"
             tvRequestUser.text = "Request user: " + req.RequestUserName
-            if (req.RequestDescription.isNullOrEmpty())
+            if (!req.RequestDescription.isNullOrEmpty())
                 tvRequestDescription.text = "Request Description: " + req.RequestDescription
+            else
+                tvRequestDescription.text =""
         }
     }
 
@@ -67,10 +78,18 @@ class RequestAdapter(private val data: List<Request>, context: Context) :
                 .setTitle("Confirmation")
                 .setMessage("Are you sure you want to Accept this request?\nBy Accepting this request, all other requests for this advertisement will reject.")
                 .setPositiveButton("YES") { dialogInterface: DialogInterface, i: Int ->
-                    dialogInterface.dismiss()
+                    Database.getInstance(context).acceptRequest(data[position]) {
+                        dialogInterface.dismiss()
+                        requestListFragment.loadData()
+                        Toast.makeText(context,"Request accepted",Toast.LENGTH_SHORT).show()
+                    }
                 }
                 .setNegativeButton("NO") { dialogInterface: DialogInterface, i: Int ->
-                    dialogInterface.dismiss()
+                    Database.getInstance(context).rejectRequest(data[position]) {
+                        dialogInterface.dismiss()
+                        requestListFragment.loadData()
+                        Toast.makeText(context,"Request rejected",Toast.LENGTH_SHORT).show()
+                    }
                 }
                 .show()
         }

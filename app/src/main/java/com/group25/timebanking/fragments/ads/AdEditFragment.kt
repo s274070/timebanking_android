@@ -187,14 +187,15 @@ class AdEditFragment : Fragment() {
                     snackBar.setAction("Dismiss") {
                         snackBar.dismiss()
                     }
-
-                    if (isEditMode!!) {
-                        Database.getInstance(context).saveAd(ad) {
-                            snackBar.show()
-                            findNavController().navigate(R.id.action_ad_edit_to_my_ads_list)
-                        }
+                    Database.getInstance(context).saveAd(ad) {
+                        snackBar.show()
+                        findNavController().navigate(R.id.action_ad_edit_to_my_ads_list)
                     }
-                    /*else {
+
+                    /*if (isEditMode!!) {
+
+                    }
+                    else {
                         Database.getInstance(context).adsList.add(ad)
                         Database.getInstance(context).save()
                     }*/

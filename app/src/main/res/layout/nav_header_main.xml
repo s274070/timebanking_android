@@ -35,6 +35,15 @@
         android:layout_height="wrap_content"
         android:text="razi@gmail.com" />
 
+    <TextView
+        android:id="@+id/tvCredit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:text="Credit:   5"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:visibility="gone"/>
+
     <RatingBar
         android:id="@+id/ratingUser"
         style="?android:attr/ratingBarStyleIndicator"
@@ -50,7 +59,8 @@
         android:numStars="5"
         android:rating="3"
         android:stepSize="1"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="5dp"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

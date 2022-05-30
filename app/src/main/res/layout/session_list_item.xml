@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardSession"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingBottom="5dp"
+                            android:text="Title"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            app:layout_constraintHorizontal_bias="0.5" />
+
+                        <TextView
+                            android:id="@+id/tvDateTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingTop="5dp"
+                            android:text="Date"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                        <TextView
+                            android:id="@+id/tvDuration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingTop="5dp"
+                            android:text="Duration"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                        <TextView
+                            android:id="@+id/tvLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingTop="5dp"
+                            android:text="Location"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                        <TextView
+                            android:id="@+id/tvUser"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingTop="5dp"
+                            android:text="User:"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#c3c3c3" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnWriteFeedback"
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WRITE FEEDBACK"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.99"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

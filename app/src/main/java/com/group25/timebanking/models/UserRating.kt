@@ -9,21 +9,21 @@ class UserRating(
     val SessionId: String,
     val Rating: Int,
     val IsOrganiser: Boolean,
-    val Description: String?) {
+    val Feedback: String?) {
     constructor(doc: QueryDocumentSnapshot) : this(
         doc.id,
-        doc.getString("UserId")!!,
-        doc.getString("SessionId")!!,
-        doc.getLong("Rating")!!.toInt(),
-        doc.getBoolean("IsOrganiser")!!,
-        doc.getString("Description")
+        doc.getString("userId")!!,
+        doc.getString("sessionId")!!,
+        doc.getLong("rating")!!.toInt(),
+        doc.getBoolean("isOrganiser")!!,
+        doc.getString("feedback")
     )
     constructor(doc: DocumentSnapshot) : this(
         doc.id,
-        doc.getString("UserId")!!,
-        doc.getString("SessionId")!!,
-        doc.getLong("Rating")!!.toInt(),
-        doc.getBoolean("IsOrganiser")!!,
-        doc.getString("Description")
+        doc.getString("userId")!!,
+        doc.getString("sessionId")!!,
+        doc.getLong("rating")!!.toInt(),
+        doc.getBoolean("isOrganiser")!!,
+        doc.getString("feedback")
     )
 }

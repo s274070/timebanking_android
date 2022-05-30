@@ -3,18 +3,19 @@ package com.group25.timebanking.models
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QueryDocumentSnapshot
 
-class Request(
+class Session(
     var id: String?,
     val AdId:String,
     val AdTitle: String,
     val AdDateTime: String,
     val AdLocation: String,
     val AdDuration: Int,
-    val RequestDescription: String?,
-    val AdUser: String,
-    val RequestUser: String,
-    var RequestUserName: String,
-    var Status: Int) {
+    val OrganiserUser: String,
+    val OrganiserUserName: String,
+    val OrganiserUserFeedbackActive: Boolean,
+    val AttendingUser: String,
+    val AttendingUserName: String,
+    val AttendingUserFeedbackActive: Boolean) {
     constructor(doc: QueryDocumentSnapshot) : this(
         doc.id,
         doc.getString("adId")!!,
@@ -22,11 +23,12 @@ class Request(
         doc.getString("adDateTime")!!,
         doc.getString("adLocation")!!,
         doc.getLong("adDuration")!!.toInt(),
-        doc.getString("requestDescription"),
-        doc.getString("adUser")!!,
-        doc.getString("requestUser")!!,
-        doc.getString("requestUserName")!!,
-        doc.getLong("status")!!.toInt()
+        doc.getString("organiserUser")!!,
+        doc.getString("organiserUserName")!!,
+        doc.getBoolean("organiserUserFeedbackActive")!!,
+        doc.getString("attendingUser")!!,
+        doc.getString("attendingUserName")!!,
+        doc.getBoolean("attendingUserFeedbackActive")!!
     )
     constructor(doc: DocumentSnapshot) : this(
         doc.id,
@@ -35,10 +37,11 @@ class Request(
         doc.getString("adDateTime")!!,
         doc.getString("adLocation")!!,
         doc.getLong("adDuration")!!.toInt(),
-        doc.getString("requestDescription"),
-        doc.getString("adUser")!!,
-        doc.getString("requestUser")!!,
-        doc.getString("requestUserName")!!,
-        doc.getLong("status")!!.toInt()
+        doc.getString("organiserUser")!!,
+        doc.getString("organiserUserName")!!,
+        doc.getBoolean("organiserUserFeedbackActive")!!,
+        doc.getString("attendingUser")!!,
+        doc.getString("attendingUserName")!!,
+        doc.getBoolean("attendingUserFeedbackActive")!!
     )
 }

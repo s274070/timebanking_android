@@ -57,13 +57,19 @@
         android:id="@+id/request_list"
         android:name="com.group25.timebanking.fragments.ads.RequestListFragment"
         tools:layout="@layout/fragment_requests_list"
-        android:label="Requests list">
+        android:label="Received Requests">
         <action
             android:id="@+id/action_request_list_to_show_user_profile"
             app:destination="@id/showProfileFragment"
             app:enterAnim="@anim/custom_from_right"
             app:popEnterAnim="@anim/custom_from_right"
             app:popExitAnim="@anim/custom_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/session_list"
+        android:name="com.group25.timebanking.fragments.ads.SessionListFragment"
+        tools:layout="@layout/fragment_sessions_list"
+        android:label="My Sessions">
     </fragment>
     <fragment
         android:id="@+id/ad_details"

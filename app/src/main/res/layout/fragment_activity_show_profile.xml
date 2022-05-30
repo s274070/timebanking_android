@@ -13,29 +13,122 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingTop="16dp"
-        app:layout_constraintBottom_toTopOf="@id/ratingUser"
+        app:layout_constraintBottom_toTopOf="@id/lstUserInfo"
         app:layout_constraintEnd_toStartOf="@id/guideline3"
         app:layout_constraintStart_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_weight="1"
         app:srcCompat="@drawable/ic_account_circle" />
 
-    <RatingBar
-        android:id="@+id/ratingUser"
+    <LinearLayout
+        android:id="@+id/lstUserInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:progressTint="@color/ourAction"
-        android:isIndicator="true"
-        android:max="5"
-        android:numStars="5"
-        android:rating="3"
-        android:stepSize="1"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="15dp"
         app:layout_constraintBottom_toTopOf="@id/scrollView2"
         app:layout_constraintEnd_toStartOf="@id/guideline3"
         app:layout_constraintStart_toStartOf="@id/guideline2"
-        app:layout_constraintTop_toBottomOf="@id/imgProfile" />
+        app:layout_constraintTop_toBottomOf="@id/imgProfile"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:background="@color/ourLightGrey"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_marginRight="10dp">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_star_24"
+                android:backgroundTint="@color/ourAction" />
+
+            <TextView
+                android:id="@+id/rateOrganiser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="5/5"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:text="Organiser Rating"
+                android:textSize="11dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:background="@color/ourLightGrey"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_marginRight="10dp">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_star_24"
+                android:backgroundTint="@color/ourAction" />
+
+            <TextView
+                android:id="@+id/rateAttendee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="5/5"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:text="Attendee Rating"
+                android:textSize="11dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:background="@color/ourLightGrey"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_outline_payments_24"
+                android:backgroundTint="@color/ourAction" />
+
+            <TextView
+                android:id="@+id/txtCredit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="+5"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:text="Credit"
+                android:textSize="11dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -43,7 +136,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/ratingUser"
+        app:layout_constraintTop_toBottomOf="@+id/lstUserInfo"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintVertical_weight="3">
 

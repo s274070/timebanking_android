@@ -17,4 +17,5 @@
     <color name="bg_login_screen_background">#c1c1c1</color>
 
     <color name="ourAction">#ee5253</color>
+    <color name="ourLightGrey">#ecf0f1</color>
 </resources>

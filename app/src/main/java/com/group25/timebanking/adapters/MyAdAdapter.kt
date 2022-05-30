@@ -34,7 +34,7 @@ class MyAdAdapter(private val data: List<Ad>, fragmentManager: FragmentManager?)
             tvTitle.text = ad.title
             tvLocation.text = ad.location
             tvDuration.text = ad.duration.toString() + " hours"
-            if(ad.isActive){
+            if(ad.activeStatus){
                 tvStatusActive.visibility=View.VISIBLE
                 tvStatusAccepted.visibility=View.GONE
             }else{

@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvHeaderName: TextView
     private lateinit var ivHeaderProfileImage: ImageView
     private lateinit var tvHeaderEmail: TextView
+    private lateinit var tvCredit: TextView
     private lateinit var navView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +60,8 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.ad_skills_list,
                 R.id.request_list,
-                R.id.my_ads_list
+                R.id.my_ads_list,
+                R.id.session_list
             ), drawerLayout
         )
 
@@ -70,15 +72,16 @@ class MainActivity : AppCompatActivity() {
     fun loadData() {
         val drawer = navView.getHeaderView(0)
 
+        tvCredit = drawer.findViewById<TextView>(R.id.tvCredit)
         tvHeaderName = drawer.findViewById<TextView>(R.id.headerName)
         ivHeaderProfileImage = drawer.findViewById<ImageView>(R.id.headerProfileImage)
         tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
-
 
         Database.getInstance(this).getOrCreateUserByEmail(mAuth.currentUser!!.email!!) { user ->
             if (user != null) {
                 tvHeaderName.text = user.fullName
                 tvHeaderEmail.text = user.email
+                tvCredit.text = "Credit:   "+user.credit
             }
         }
 

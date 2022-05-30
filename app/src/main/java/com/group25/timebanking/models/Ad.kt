@@ -14,7 +14,7 @@ class Ad(
     val duration: Int,
     val location: String,
     val createdUser: String,
-    val isActive: Boolean) {
+    var activeStatus: Boolean) {
     constructor(doc: QueryDocumentSnapshot) : this(
         doc.id,
         doc.getString("title")!!,
@@ -24,7 +24,7 @@ class Ad(
         doc.getLong("duration")!!.toInt(),
         doc.getString("location")!!,
         doc.getString("createdUser")!!,
-        doc.getBoolean("IsActive")!!
+        doc.getBoolean("activeStatus")!!
     )
     constructor(doc: DocumentSnapshot) : this(
         doc.id,
@@ -35,6 +35,6 @@ class Ad(
         doc.getLong("duration")!!.toInt(),
         doc.getString("location")!!,
         doc.getString("createdUser")!!,
-        doc.getBoolean("IsActive")!!
+        doc.getBoolean("activeStatus")!!
     )
 }

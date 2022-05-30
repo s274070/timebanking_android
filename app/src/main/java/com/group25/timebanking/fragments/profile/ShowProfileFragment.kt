@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.group25.timebanking.R
 import com.group25.timebanking.activities.LoginActivity
 import com.group25.timebanking.models.User
+import com.group25.timebanking.models.UserRating
 import com.group25.timebanking.utils.Database
 import org.json.JSONObject
 import java.io.File
@@ -37,6 +38,9 @@ class ShowProfileFragment : Fragment() {
     private lateinit var tvSkills: TextView
     private lateinit var tvDescription: TextView
     private lateinit var imgProfile: ImageView
+    private lateinit var rateOrganiser: TextView
+    private lateinit var rateAttendee: TextView
+    private lateinit var txtCredit: TextView
 
     private lateinit var snackBar: Snackbar
 
@@ -106,6 +110,9 @@ class ShowProfileFragment : Fragment() {
         tvSkills = view.findViewById(R.id.tvSkills)
         tvDescription = view.findViewById(R.id.tvDescription)
         imgProfile = view.findViewById(R.id.imgProfile)
+        rateOrganiser = view.findViewById(R.id.rateOrganiser)
+        rateAttendee = view.findViewById(R.id.rateAttendee)
+        txtCredit = view.findViewById(R.id.txtCredit)
     }
 
     override fun onResume() {
@@ -128,7 +135,33 @@ class ShowProfileFragment : Fragment() {
                 tvLocation.text = user.location
                 tvSkills.text = user.skills
                 tvDescription.text = user.description
+                var creditSign=""
+                if(user.credit>0)
+                    creditSign="+"
+                else if(user.credit<0)
+                    creditSign="-"
+                txtCredit.text=creditSign+user.credit.toString()
             }
+        }
+        Database.getInstance(context).getUserRatingsAsOrganiser {
+            var rate = 0
+            for(userRating in it){
+                rate+=userRating.Rating
+            }
+            if(!it.isNullOrEmpty())
+                rateOrganiser.text=(rate/it.size).toInt().toString()+"/"+it.size.toString()
+            else
+                rateOrganiser.text="0"
+        }
+        Database.getInstance(context).getUserRatingsAsAttendee {
+            var rate = 0
+            for(userRating in it){
+                rate+=userRating.Rating
+            }
+            if(!it.isNullOrEmpty())
+                rateAttendee.text=(rate/it.size).toInt().toString()+"/"+it.size.toString()
+            else
+                rateAttendee.text="0"
         }
 
         if (isEditable == true) {

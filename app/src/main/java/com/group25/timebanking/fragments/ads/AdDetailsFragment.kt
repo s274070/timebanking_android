@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -100,6 +101,7 @@ class AdDetailsFragment : Fragment() {
                             Status = 0
                         )
                         Database.getInstance(context).saveUserRequest(request) {
+                            Toast.makeText(context,"Request sent", Toast.LENGTH_SHORT).show()
                             builder.dismiss()
                         }
                     }

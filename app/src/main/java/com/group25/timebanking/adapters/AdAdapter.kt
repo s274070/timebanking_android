@@ -6,18 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.group25.timebanking.R
 import com.group25.timebanking.models.Ad
+import com.group25.timebanking.models.Request
+import com.group25.timebanking.utils.Database
 import com.group25.timebanking.utils.LoadingScreen
 import java.util.*
 
@@ -25,6 +25,7 @@ class AdAdapter() :
     RecyclerView.Adapter<AdAdapter.ViewHolder>(), Filterable{
 
     private lateinit var context: Context
+    private lateinit var layoutInflater: LayoutInflater
     var data: MutableList<Ad> = ArrayList()
     var dataFull: MutableList<Ad> = ArrayList()
     var caller: String = ""
@@ -32,11 +33,13 @@ class AdAdapter() :
     constructor(
         allData: MutableList<Ad>,
         caller: String,
-        contex: Context
+        contex: Context,
+        layoutInflater: LayoutInflater
     ) : this() {
         this.data = allData
         this.dataFull.addAll(data)
         this.context = contex
+        this.layoutInflater = layoutInflater
         this.caller = caller
     }
 
@@ -84,6 +87,37 @@ class AdAdapter() :
         }
 
         holder.btnSendRequest.setOnClickListener {
+            val builder = AlertDialog.Builder(context).create()
+            val view = layoutInflater.inflate(R.layout.dialog_request_session, null)
+            val etDescription = view.findViewById<EditText>(R.id.etDescription)
+            val btnCancel = view.findViewById<Button>(R.id.btnCancel)
+            val btnOK = view.findViewById<Button>(R.id.btnOK)
+            builder.setView(view)
+            btnCancel.setOnClickListener {
+                builder.dismiss()
+            }
+            btnOK.setOnClickListener {
+                val mAuth = FirebaseAuth.getInstance()
+                val request = Request(
+                    id = null,
+                    AdId = data[position].id,
+                    AdTitle = data[position].title,
+                    AdDateTime = data[position].date + " " + data[position].time,
+                    AdDuration = data[position].duration,
+                    AdLocation = data[position].location,
+                    AdUser = data[position].createdUser,
+                    RequestDescription = etDescription.text.toString(),
+                    RequestUser = mAuth.currentUser!!.email!!,
+                    RequestUserName = "",
+                    Status = 0
+                )
+                Database.getInstance(context).saveUserRequest(request) {
+                    Toast.makeText(context,"Request sent",Toast.LENGTH_SHORT).show()
+                    builder.dismiss()
+                }
+            }
+            builder.setCanceledOnTouchOutside(false)
+            builder.show()
         }
     }
 

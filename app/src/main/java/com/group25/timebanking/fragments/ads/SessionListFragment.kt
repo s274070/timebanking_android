@@ -7,26 +7,26 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.group25.timebanking.R
-import com.group25.timebanking.adapters.RequestAdapter
+import com.group25.timebanking.adapters.SessionAdapter
 import com.group25.timebanking.utils.Database
 
-class RequestListFragment : Fragment() {
+class SessionListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
-    private lateinit var rvRequestList: RecyclerView
+    private lateinit var rvSessionsList: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_requests_list, container, false)
+        return inflater.inflate(R.layout.fragment_sessions_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         tvEmpty = view.findViewById<TextView>(R.id.tvEmpty)
-        rvRequestList = view.findViewById<RecyclerView>(R.id.rvRequestList)
+        rvSessionsList = view.findViewById<RecyclerView>(R.id.rvSessionsList)
 
     }
 
@@ -37,17 +37,17 @@ class RequestListFragment : Fragment() {
 
     fun loadData(){
 
-        Database.getInstance(context).getUserRequestList { requestsList ->
+        Database.getInstance(context).getUserSessionList { sessionList ->
 
-            if (requestsList.isEmpty()) {
-                rvRequestList.visibility = View.GONE
+            if (sessionList.isEmpty()) {
+                rvSessionsList.visibility = View.GONE
                 tvEmpty.visibility = View.VISIBLE
             } else {
-                rvRequestList.visibility = View.VISIBLE
+                rvSessionsList.visibility = View.VISIBLE
                 tvEmpty.visibility = View.GONE
             }
-            rvRequestList.layoutManager = LinearLayoutManager(context)
-            rvRequestList.adapter = RequestAdapter(requestsList, requireContext(), this)
+            rvSessionsList.layoutManager = LinearLayoutManager(context)
+            rvSessionsList.adapter = SessionAdapter(sessionList, requireContext(), layoutInflater)
         }
     }
 }
