@@ -143,6 +143,40 @@ class Database private constructor (context: Context?) {
     }
 
 
+    fun getOrCreateUserByEmail(email: String, onFinishCallback: (User?) -> Unit = {}) {
+        var user: User? = null
+        val db = FirebaseFirestore.getInstance().collection(COLLECTION_PATH_USERS)
+        db.addSnapshotListener { value, error ->
+            if (error != null) throw error
+            for (doc in value!!) {
+                val item = User(doc)
+                if (item.email.equals(email, ignoreCase = true)) {
+                    user = item
+                    break
+                }
+            }
+            if (user == null) {
+                user = User(
+                    "",
+                    email,
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    ""
+                )
+                val doc: DocumentReference = db.document()
+                doc.set(user!!).addOnSuccessListener {
+                    onFinishCallback(user!!)
+                }
+            } else
+                onFinishCallback(user)
+        }
+    }
+
+
     fun saveUser(user: User, onFinishCallback: () -> Unit = {}) {
         val db = FirebaseFirestore.getInstance().collection(COLLECTION_PATH_USERS)
         val doc: DocumentReference =

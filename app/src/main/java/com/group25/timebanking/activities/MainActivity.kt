@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
 
 
-        Database.getInstance(this).getUserByEmail(mAuth.currentUser!!.email!!) { user ->
+        Database.getInstance(this).getOrCreateUserByEmail(mAuth.currentUser!!.email!!) { user ->
             if (user != null) {
                 tvHeaderName.text = user.fullName
                 tvHeaderEmail.text = user.email
