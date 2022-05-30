@@ -1,10 +1,11 @@
 package com.group25.timebanking.models
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Ads(
+class Ad(
     var id: String,
     val title: String,
     val description:String?,
@@ -12,7 +13,8 @@ class Ads(
     val time: String,
     val duration: Int,
     val location: String,
-    val createdUser: String) {
+    val createdUser: String,
+    val isActive: Boolean) {
     constructor(doc: QueryDocumentSnapshot) : this(
         doc.id,
         doc.getString("title")!!,
@@ -21,6 +23,18 @@ class Ads(
         doc.getString("time")!!,
         doc.getLong("duration")!!.toInt(),
         doc.getString("location")!!,
-        doc.getString("createdUser")!!
+        doc.getString("createdUser")!!,
+        doc.getBoolean("IsActive")!!
+    )
+    constructor(doc: DocumentSnapshot) : this(
+        doc.id,
+        doc.getString("title")!!,
+        doc.getString("description"),
+        doc.getString("date")!!,
+        doc.getString("time")!!,
+        doc.getLong("duration")!!.toInt(),
+        doc.getString("location")!!,
+        doc.getString("createdUser")!!,
+        doc.getBoolean("IsActive")!!
     )
 }

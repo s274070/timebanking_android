@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context=".fragments.profile.ShowProfileActivity">
+    tools:context=".fragments.profile.ShowProfileFragment">
 
     <ImageView
         android:id="@+id/imgProfile"
@@ -14,13 +14,31 @@
         android:layout_height="0dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ratingUser"
         app:layout_constraintEnd_toStartOf="@id/scrollView1"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_account_circle" />
+
+    <RatingBar
+        android:id="@+id/ratingUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progressTint="@color/ourAction"
+        android:isIndicator="true"
+        android:max="5"
+        android:numStars="5"
+        android:rating="3"
+        android:stepSize="1"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintStart_toEndOf="@+id/guideline2"
+        app:layout_constraintEnd_toStartOf="@id/scrollView1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toBottomOf="@id/imgProfile" />
 
     <ScrollView
         android:id="@+id/scrollView1"

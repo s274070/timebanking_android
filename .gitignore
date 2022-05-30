@@ -28,10 +28,5 @@ render.experimental.xml
 *.jks
 *.keystore
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
-
 # Android Profiling
 *.hprof
-
-app/src/main/res/values/secrets.xml

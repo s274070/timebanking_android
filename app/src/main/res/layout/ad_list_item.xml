@@ -102,9 +102,22 @@
                     <Button
                         android:id="@+id/btnUser"
                         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                        android:layout_width="120dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="40dp"
+                        android:paddingStart="10dp"
+                        android:layout_marginTop="5dp"
                         android:text="User info"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        app:layout_constraintHorizontal_bias="0.99"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/btnSendRequest"
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Send Request"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.99"

@@ -22,10 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.group25.timebanking.R
 import com.group25.timebanking.activities.LoginActivity
-import com.group25.timebanking.activities.MainActivity
-import com.group25.timebanking.extensions.toString
-import com.group25.timebanking.models.Ads
-import com.group25.timebanking.models.Users
+import com.group25.timebanking.models.User
 import com.group25.timebanking.utils.Database
 import org.json.JSONObject
 import java.io.File
@@ -40,7 +37,6 @@ class ShowProfileFragment : Fragment() {
     private lateinit var tvSkills: TextView
     private lateinit var tvDescription: TextView
     private lateinit var imgProfile: ImageView
-    private lateinit var btnLogout: Button
 
     private lateinit var snackBar: Snackbar
 
@@ -110,35 +106,15 @@ class ShowProfileFragment : Fragment() {
         tvSkills = view.findViewById(R.id.tvSkills)
         tvDescription = view.findViewById(R.id.tvDescription)
         imgProfile = view.findViewById(R.id.imgProfile)
-        btnLogout = view.findViewById(R.id.btnLogout)
-
-        btnLogout.setOnClickListener {
-
-            FirebaseAuth.getInstance().signOut()
-
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.google_web_client_id))
-                .requestEmail()
-                .build()
-
-            val googleSignInClient = GoogleSignIn.getClient( requireContext() , gso)
-
-            googleSignInClient.signOut()
-
-            val intent = Intent(context, LoginActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
-        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        if (arguments?.containsKey("userId") == true) {
-            userEmail = arguments?.getString("userId", "")!!
-            btnLogout.visibility = View.GONE
+        userEmail = if (arguments?.containsKey("userId") == true) {
+            arguments?.getString("userId", "")!!
         } else {
-            userEmail = FirebaseAuth.getInstance().currentUser!!.email!!
+            FirebaseAuth.getInstance().currentUser!!.email!!
         }
 
         isEditable = arguments?.getBoolean("editable", true)
@@ -201,14 +177,16 @@ class ShowProfileFragment : Fragment() {
             }
 
 
-            val user = Users(
+            val user = User(
                 userId,
                 tvEmail.text.toString(),
                 tvFullName.text.toString(),
                 tvNickName.text.toString(),
                 tvSkills.text.toString(),
                 tvDescription.text.toString(),
-                tvLocation.text.toString()
+                tvLocation.text.toString(),
+                0,
+            ""
             )
 
             snackBar = Snackbar.make(

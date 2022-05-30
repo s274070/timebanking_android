@@ -1,5 +1,6 @@
 package com.group25.timebanking.adapters
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +12,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.group25.timebanking.R
-import com.group25.timebanking.extensions.toString
-import com.group25.timebanking.models.Ads
+import com.group25.timebanking.models.Ad
 
-class MyAdAdapter(private val data: List<Ads>, fragmentManager: FragmentManager?) :
+class MyAdAdapter(private val data: List<Ad>, fragmentManager: FragmentManager?) :
     RecyclerView.Adapter<MyAdAdapter.ViewHolder>() {
 
     var fm: FragmentManager? = fragmentManager
@@ -24,14 +24,23 @@ class MyAdAdapter(private val data: List<Ads>, fragmentManager: FragmentManager?
         val tvDateTime: TextView = v.findViewById<TextView>(R.id.tvDateTime)
         val tvDuration: TextView = v.findViewById<TextView>(R.id.tvDuration)
         val tvLocation: TextView = v.findViewById<TextView>(R.id.tvLocation)
+        val tvStatusActive: TextView = v.findViewById<TextView>(R.id.tvStatusActive)
+        val tvStatusAccepted: TextView = v.findViewById<TextView>(R.id.tvStatusAccepted)
         val cardAd = v.findViewById<CardView>(R.id.cardAd)
         val btnEdit = v.findViewById<Button>(R.id.btnEdit)
 
-        fun bind(ad: Ads) {
+        fun bind(ad: Ad) {
             tvDateTime.text = ad.date+"  "+ad.time.toString()
             tvTitle.text = ad.title
             tvLocation.text = ad.location
             tvDuration.text = ad.duration.toString() + " hours"
+            if(ad.isActive){
+                tvStatusActive.visibility=View.VISIBLE
+                tvStatusAccepted.visibility=View.GONE
+            }else{
+                tvStatusActive.visibility=View.GONE
+                tvStatusAccepted.visibility=View.VISIBLE
+            }
         }
     }
 

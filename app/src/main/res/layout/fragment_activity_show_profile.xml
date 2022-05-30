@@ -13,12 +13,29 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingTop="16dp"
-        app:layout_constraintBottom_toTopOf="@id/scrollView2"
+        app:layout_constraintBottom_toTopOf="@id/ratingUser"
         app:layout_constraintEnd_toStartOf="@id/guideline3"
         app:layout_constraintStart_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_weight="1"
         app:srcCompat="@drawable/ic_account_circle" />
+
+    <RatingBar
+        android:id="@+id/ratingUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progressTint="@color/ourAction"
+        android:isIndicator="true"
+        android:max="5"
+        android:numStars="5"
+        android:rating="3"
+        android:stepSize="1"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/scrollView2"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toStartOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/imgProfile" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -26,9 +43,9 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/imgProfile"
+        app:layout_constraintTop_toBottomOf="@+id/ratingUser"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintVertical_weight="2">
+        app:layout_constraintVertical_weight="3">
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -226,16 +243,6 @@
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/textColorMain" />
-
-
-            <Button
-                android:id="@+id/btnLogout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Logout"
-                android:textAlignment="center"
-                />
 
         </LinearLayout>
 

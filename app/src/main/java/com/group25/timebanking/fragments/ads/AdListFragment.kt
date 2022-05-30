@@ -65,7 +65,7 @@ class AdListFragment : Fragment() {
                 tvEmpty.visibility = View.GONE
             }
             rvAdsList.layoutManager = LinearLayoutManager(context)
-            adapter = AdAdapter(adsList, "AdListFragment", parentFragmentManager)
+            adapter = AdAdapter(adsList, "AdListFragment", requireContext())
             rvAdsList.adapter = adapter
         }
     }

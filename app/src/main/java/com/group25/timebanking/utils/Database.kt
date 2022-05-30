@@ -1,17 +1,24 @@
 package com.group25.timebanking.utils
 
+import android.content.ContentValues
 import android.content.Context
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
-import com.group25.timebanking.models.Ads
-import com.group25.timebanking.models.Users
+import com.group25.timebanking.models.Ad
+import com.group25.timebanking.models.Request
+import com.group25.timebanking.models.User
+import com.group25.timebanking.models.UserRating
 
 class Database private constructor (context: Context?) {
 
     companion object {
         private var INSTANCE: Database? = null
+        private const val TAG = "Database"
         private const val COLLECTION_PATH_ADS = "Ads"
+        private const val COLLECTION_PATH_REQUESTS = "Requests"
         private const val COLLECTION_PATH_USERS = "Users"
 
         fun getInstance(context: Context?) =
@@ -21,43 +28,14 @@ class Database private constructor (context: Context?) {
 
     }
 
-    //private val sharedPreferences = context?.getSharedPreferences("database", Context.MODE_PRIVATE)
-
-    //private var adsList: ArrayList<Ads> = ArrayList()
-
-    /*init {
-        val json = sharedPreferences.getString(KEY_JSON_PREF, null)
-        if (json == null) {
-            // initialize your list contents for the first time
-        } else {
-            // convert your json and fill the data into your lists
-        }
-    }*/
-    /*
-    fun load(){
-        val data = sharedPreferences?.getString("database", null)
-        if (data != null){
-            val sType = object : TypeToken<List<Ads>>() { }.type
-            adsList = Gson().fromJson<ArrayList<Ads>>(data, sType)
-        }
-    }
-
-    fun save(){
-        with(sharedPreferences?.edit()) {
-            this?.putString("database", Gson().toJson(adsList))
-            this?.apply()
-        }
-    }
-     */
-
-    fun getAdsSkillsList(onFinishCallback: (List<String>) -> Unit = {}) {
+    fun getAdsSkillsList2(onFinishCallback: (List<String>) -> Unit = {}) {
         var adsSkillsList: ArrayList<String> = ArrayList()
         var mAuth = FirebaseAuth.getInstance()
         FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
                 for (doc in value!!) {
-                    val ad = Ads(doc)
+                    val ad = Ad(doc)
                     if (ad.createdUser != mAuth.currentUser!!.email!!) {
                         adsSkillsList.add(ad.title.uppercase())
                     }
@@ -66,56 +44,75 @@ class Database private constructor (context: Context?) {
             }
     }
 
-    fun getAdsList(skill:String, onFinishCallback: (ArrayList<Ads>) -> Unit = {}) {
-        var adsList: ArrayList<Ads> = ArrayList()
+    fun getAdsSkillsList(onFinishCallback: (List<String>) -> Unit = {}) {
+        var adsSkillsList: ArrayList<String> = ArrayList()
         var mAuth = FirebaseAuth.getInstance()
         FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
                 for (doc in value!!) {
-                    val ad = Ads(doc)
+                    val ad = Ad(doc)
+                    if (ad.createdUser != mAuth.currentUser!!.email!!) {
+                        adsSkillsList.add(ad.title.uppercase())
+                    }
+                }
+                onFinishCallback(adsSkillsList.distinct())
+            }
+    }
+
+    fun getAdsList(skill:String, onFinishCallback: (ArrayList<Ad>) -> Unit = {}) {
+        var adList: ArrayList<Ad> = ArrayList()
+        var mAuth = FirebaseAuth.getInstance()
+        FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
+            .addSnapshotListener { value, error ->
+                if (error != null) throw error
+                for (doc in value!!) {
+                    val ad = Ad(doc)
                     if (ad.title.equals(skill, ignoreCase = true) && ad.createdUser != mAuth.currentUser!!.email!!) {
-                        adsList.add(ad)
+                        adList.add(ad)
                     }
                 }
-                onFinishCallback(adsList)
+                onFinishCallback(adList)
             }
     }
 
-    fun getMyAdsList(onFinishCallback: (ArrayList<Ads>) -> Unit = {}) {
-        var adsList: ArrayList<Ads> = ArrayList()
+    fun getMyAdsList(onFinishCallback: (ArrayList<Ad>) -> Unit = {}) {
+        var adList: ArrayList<Ad> = ArrayList()
         var mAuth = FirebaseAuth.getInstance()
         FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
                 for (doc in value!!) {
-                    val ad = Ads(doc)
+                    val ad = Ad(doc)
                     if (ad.createdUser == mAuth.currentUser!!.email!!) {
-                        adsList.add(ad)
+                        adList.add(ad)
                     }
                 }
-                onFinishCallback(adsList)
+                onFinishCallback(adList)
             }
     }
 
-    fun getAdById(id: String, onFinishCallback: (Ads?) -> Unit = {}) {
-        var ad: Ads? = null
-        var mAuth = FirebaseAuth.getInstance()
-        FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
-            .addSnapshotListener { value, error ->
-                if (error != null) throw error
-                for (doc in value!!) {
-                    val item = Ads(doc)
-                    if (item.id == id && item.createdUser == mAuth.currentUser!!.email!!) {
-                        ad = item
-                        break
-                    }
+    fun getAdById(id: String, onFinishCallback: (Ad?) -> Unit = {}) {
+        val db = FirebaseFirestore.getInstance()
+        val query = db.collection(COLLECTION_PATH_ADS)
+            .whereEqualTo(FieldPath.documentId(), id)
+        query.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                if(task.result?.documents.isNullOrEmpty())
+                    Log.e(TAG, "No document found, getAdById($id)")
+                else{
+                    val item = Ad(task.result?.documents!![0])
+                    onFinishCallback(item)
                 }
-                onFinishCallback(ad)
+
+            } else {
+                Log.e(TAG, "Error getting documents, getAdById($id)", task.exception)
+
             }
+        }
     }
 
-    fun saveAd(ad: Ads, onFinishCallback: () -> Unit = {}) {
+    fun saveAd(ad: Ad, onFinishCallback: () -> Unit = {}) {
         val db = FirebaseFirestore.getInstance().collection(COLLECTION_PATH_ADS)
         val doc: DocumentReference =
             if (ad.id.isEmpty()) { // new
@@ -129,13 +126,13 @@ class Database private constructor (context: Context?) {
     }
 
 
-    fun getUserByEmail(id: String, onFinishCallback: (Users?) -> Unit = {}) {
-        var user: Users? = null
+    fun getUserByEmail(id: String, onFinishCallback: (User?) -> Unit = {}) {
+        var user: User? = null
         FirebaseFirestore.getInstance().collection(COLLECTION_PATH_USERS)
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
                 for (doc in value!!) {
-                    val item = Users(doc)
+                    val item = User(doc)
                     if (item.email == id) {
                         user = item
                         break
@@ -146,7 +143,7 @@ class Database private constructor (context: Context?) {
     }
 
 
-    fun saveUser(user: Users, onFinishCallback: () -> Unit = {}) {
+    fun saveUser(user: User, onFinishCallback: () -> Unit = {}) {
         val db = FirebaseFirestore.getInstance().collection(COLLECTION_PATH_USERS)
         val doc: DocumentReference =
             if (user.id.isEmpty()) { // new
@@ -156,6 +153,56 @@ class Database private constructor (context: Context?) {
             }
         doc.set(user).addOnSuccessListener {
             onFinishCallback()
+        }
+    }
+
+    fun getUserRequestList(onFinishCallback: (ArrayList<Request>) -> Unit = {}) {
+        var requestList: ArrayList<Request> = ArrayList()
+        var mAuth = FirebaseAuth.getInstance()
+        val db = FirebaseFirestore.getInstance()
+        val query = db.collection(COLLECTION_PATH_REQUESTS)
+            .whereEqualTo("AdUser", mAuth.currentUser!!.email!!)
+            .whereEqualTo("Status", 0)
+        query.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                for (doc in task.result?.documents!!) {
+                    val req = Request(doc)
+                    requestList.add(req)
+                }
+                onFinishCallback(requestList)
+
+            } else {
+                Log.e(TAG, "Error getting documents, getUserRequestList", task.exception)
+
+            }
+        }
+    }
+
+    fun saveUserRequest(request: Request, onFinishCallback: () -> Unit = {}) {
+        val db = FirebaseFirestore.getInstance().collection(COLLECTION_PATH_REQUESTS)
+        val doc: DocumentReference = db.document()
+        doc.set(request).addOnSuccessListener {
+            onFinishCallback()
+        }
+    }
+
+    fun getUserRatings(onFinishCallback: (ArrayList<UserRating>) -> Unit = {}) {
+        var ratingList: ArrayList<UserRating> = ArrayList()
+        var mAuth = FirebaseAuth.getInstance()
+        val db = FirebaseFirestore.getInstance()
+        val query = db.collection(COLLECTION_PATH_REQUESTS)
+            .whereEqualTo("UserId", mAuth.currentUser!!.email!!)
+        query.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                for (doc in task.result?.documents!!) {
+                    val rate = UserRating(doc)
+                    ratingList.add(rate)
+                }
+                onFinishCallback(ratingList)
+            } else {
+                Log.e(TAG, "Error getting documents, getUserRatings", task.exception)
+
+            }
         }
     }
 }

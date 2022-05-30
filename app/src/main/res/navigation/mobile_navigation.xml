@@ -54,6 +54,18 @@
             app:enterAnim="@anim/custom_from_top" />
     </fragment>
     <fragment
+        android:id="@+id/request_list"
+        android:name="com.group25.timebanking.fragments.ads.RequestListFragment"
+        tools:layout="@layout/fragment_requests_list"
+        android:label="Requests list">
+        <action
+            android:id="@+id/action_request_list_to_show_user_profile"
+            app:destination="@id/showProfileFragment"
+            app:enterAnim="@anim/custom_from_right"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
+    </fragment>
+    <fragment
         android:id="@+id/ad_details"
         android:name="com.group25.timebanking.fragments.ads.AdDetailsFragment"
         android:label="Ad Details"
@@ -65,6 +77,10 @@
             app:popEnterAnim="@anim/custom_from_top"
             app:popUpTo="@+id/ad_details"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_ad_details_to_user_profile"
+            app:destination="@id/showProfileFragment"
+            app:enterAnim="@anim/custom_from_top" />
     </fragment>
     <fragment
         android:id="@+id/ad_edit"

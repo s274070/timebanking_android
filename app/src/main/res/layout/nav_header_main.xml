@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark"
     android:gravity="bottom"
     android:orientation="vertical"
@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/headerProfileImage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:scaleType="fitCenter"
@@ -34,4 +34,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="razi@gmail.com" />
+
+    <RatingBar
+        android:id="@+id/ratingUser"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progressTint="@color/ourAction"
+        android:scaleX=".8"
+        android:scaleY=".8"
+        android:transformPivotX="0dp"
+        android:transformPivotY="0dp"
+        android:isIndicator="true"
+        android:max="5"
+        android:numStars="5"
+        android:rating="3"
+        android:stepSize="1"
+        android:layout_marginTop="5dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/btnLogout"
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Logout"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            app:backgroundTint="#ee5253"
+            app:icon="@drawable/ic_baseline_exit_to_app_24"
+            app:iconTint="#FFFFFF" />
+
+    </RelativeLayout>
 </LinearLayout>

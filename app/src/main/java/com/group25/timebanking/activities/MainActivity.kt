@@ -1,7 +1,10 @@
 package com.group25.timebanking.activities
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +15,12 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import com.group25.timebanking.R
 import com.group25.timebanking.utils.Database
 import com.group25.timebanking.utils.SharedPrefs
@@ -51,9 +58,11 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.ad_skills_list,
+                R.id.request_list,
                 R.id.my_ads_list
             ), drawerLayout
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
@@ -76,12 +85,32 @@ class MainActivity : AppCompatActivity() {
         File(filesDir, "profilepic.jpg").let {
             if (it.exists()) ivHeaderProfileImage.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
         }
+
+        val btnLogout: Button = drawer.findViewById(R.id.btnLogout)
+        btnLogout.setOnClickListener {
+
+            FirebaseAuth.getInstance().signOut()
+
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.google_web_client_id))
+                .requestEmail()
+                .build()
+
+            val googleSignInClient = GoogleSignIn.getClient( this , gso)
+
+            googleSignInClient.signOut()
+
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }
     }
 
     override fun onResume() {
         super.onResume()
 
         loadData()
+        loadFirebaseMessagingToken()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -90,5 +119,18 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    private fun loadFirebaseMessagingToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("MainActivity", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            Log.d("MainActivity", "FirebaseMessagingToken: "+token)
+        })
+    }
 
 }

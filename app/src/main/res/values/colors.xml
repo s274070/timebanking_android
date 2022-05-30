@@ -15,4 +15,6 @@
     <color name="bg_main_screen_background">#000000</color>
     <!--<color name="bg_login_screen_background">#037e7c</color>-->
     <color name="bg_login_screen_background">#c1c1c1</color>
+
+    <color name="ourAction">#ee5253</color>
 </resources>

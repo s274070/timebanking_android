@@ -1,6 +1,7 @@
 package com.group25.timebanking.adapters
 
-import android.annotation.SuppressLint
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,31 +10,33 @@ import android.widget.Button
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.group25.timebanking.R
-import com.group25.timebanking.extensions.toString
-import com.group25.timebanking.models.Ads
+import com.group25.timebanking.models.Ad
+import com.group25.timebanking.utils.LoadingScreen
 import java.util.*
 
 class AdAdapter() :
     RecyclerView.Adapter<AdAdapter.ViewHolder>(), Filterable{
 
-    var fm: FragmentManager? = null
-    var data: MutableList<Ads> = ArrayList()
-    var dataFull: MutableList<Ads> = ArrayList()
+    private lateinit var context: Context
+    var data: MutableList<Ad> = ArrayList()
+    var dataFull: MutableList<Ad> = ArrayList()
     var caller: String = ""
 
     constructor(
-        allData: MutableList<Ads>,
+        allData: MutableList<Ad>,
         caller: String,
-        fragmentManager: FragmentManager?
+        contex: Context
     ) : this() {
         this.data = allData
         this.dataFull.addAll(data)
-        this.fm = fragmentManager
+        this.context = contex
         this.caller = caller
     }
 
@@ -44,8 +47,9 @@ class AdAdapter() :
         val tvLocation: TextView = v.findViewById<TextView>(R.id.tvLocation)
         val cardAd = v.findViewById<CardView>(R.id.cardAd)
         val btnUser = v.findViewById<Button>(R.id.btnUser)
+        val btnSendRequest = v.findViewById<Button>(R.id.btnSendRequest)
 
-        fun bind(ad: Ads) {
+        fun bind(ad: Ad) {
             tvDateTime.text = ad.date+"  "+ad.time.toString()
             tvTitle.text = ad.title
             tvLocation.text = ad.location
@@ -78,6 +82,9 @@ class AdAdapter() :
                 putBoolean("editable", false)
             })
         }
+
+        holder.btnSendRequest.setOnClickListener {
+        }
     }
 
     override fun getItemCount(): Int {
@@ -90,12 +97,12 @@ class AdAdapter() :
 
     private var myFilter: Filter = object : Filter() {
         override fun performFiltering(constraint: CharSequence?): FilterResults {
-            val dataFiltered = mutableListOf<Ads>()
+            val dataFiltered = mutableListOf<Ad>()
             if (constraint == null || constraint.isEmpty()) {
                 dataFiltered.addAll(dataFull)
             } else {
                 val filterPattern = constraint.toString().toLowerCase().trim()
-                for (item: Ads in dataFull) {
+                for (item: Ad in dataFull) {
                     if (item.title.lowercase(Locale.ROOT).contains(filterPattern) ||
                         item.location.lowercase(Locale.ROOT).contains(filterPattern) ||
                         item.date.contains(filterPattern)
@@ -112,7 +119,7 @@ class AdAdapter() :
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
             data.clear()
-            data.addAll(results?.values as MutableList<Ads>)
+            data.addAll(results?.values as MutableList<Ad>)
             notifyDataSetChanged()
         }
     }

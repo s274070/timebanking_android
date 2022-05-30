@@ -10,12 +10,11 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.google.firebase.auth.FirebaseAuth
-import com.group25.timebanking.activities.MainActivity
 import com.group25.timebanking.utils.Database
 import com.group25.timebanking.R
 import java.util.*
 import com.group25.timebanking.extensions.toString
-import com.group25.timebanking.models.Ads
+import com.group25.timebanking.models.Ad
 import java.text.SimpleDateFormat
 
 // TODO: Rename parameter arguments, choose names that match
@@ -168,7 +167,7 @@ class AdEditFragment : Fragment() {
                 //save data
                 if (validateForm()) {
 
-                    val ad = Ads(
+                    val ad = Ad(
                         adId,
                         etTitle.editText?.text.toString(),
                         etDescription.editText?.text.toString(),
@@ -176,7 +175,8 @@ class AdEditFragment : Fragment() {
                         timeValue,
                         etDuration.editText?.text.toString().toInt(),
                         etLocation.editText?.text.toString(),
-                        FirebaseAuth.getInstance().currentUser!!.email!!
+                        FirebaseAuth.getInstance().currentUser!!.email!!,
+                    true
                     )
 
                     snackBar = Snackbar.make(
